@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# markpdf.py v1.5.2
+# markpdf.py v1.5.4
 # -----------------
 #
 # @zudsniper
@@ -10,7 +10,7 @@ from jinja2 import Template
 import markdown
 import pdfkit
 from loguru import logger
-from colorama import Fore, Style
+from colorama import Fore, Back, Style
 import sys
 
 # ========= LOGGER ========= # 
@@ -67,8 +67,8 @@ def main():
 
     # If dark mode is enabled, add a CSS style for dark mode
     if args.darkmode:
-        logger.info(f"{Fore.WHITE}{Back.BLACK}Dark mode is enabled. The output PDF will be in the Darcula color scheme.{Style.RESET_ALL}")
-        html = f"<style>body,html {{ background-color: #2b2b2b; color: #a9b7c6; font-family: '{args.font if args.font else 'Helvetica'}'; }}</style>{html}"
+        logger.info(f"{Fore.BLACK}{Back.WHITE}Dark mode is enabled. The output PDF will be in the Darcula color scheme.{Style.RESET_ALL}")
+        html = f"<style>body,html {{ background-color: #2b2b2b; color: #a9b7c6; font-family: 'JetBrains Mono'; }}</style>{html}"
 
     # If a font is provided, apply it to the document
     if args.font:
@@ -83,10 +83,10 @@ def main():
 
     # Convert HTML to PDF
     options = {
-        'margin-top': '7mm',
-        'margin-right': '2mm',
-        'margin-bottom': '7mm',
-        'margin-left': '2mm',
+        'margin-top': '0mm',
+        'margin-right': '0mm',
+        'margin-bottom': '0mm',
+        'margin-left': '0mm',
     }
     pdfkit.from_string(html, args.output, options=options)
     logger.info(f"{Fore.GREEN}PDF has been successfully generated at {args.output}{Style.RESET_ALL}")
