@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# markpdf.py v1.1.0
+# markpdf.py v1.2.0
 # -----------------
 #
 # @zudsniper
@@ -35,13 +35,20 @@ def main():
         file_content = file.read()
 
     # Separate the YAML metadata from the rest of the Markdown content
-    pattern = re.compile(r'^---\n(.+?)\n---\n(.+)', re.DOTALL)
+    pattern = re.compile(r'^---\\n(.+?)\\n---\\n(.+)', re.DOTALL)
     match = pattern.match(file_content)
     if match:
         yaml_metadata_str, markdown_content = match.groups()
         yaml_metadata = yaml.safe_load(yaml_metadata_str)
     else:
-        logger.error(f"{Fore.RED}No metadata found in the markdown file.{Style.RESET_ALL}")
+        logger.warning(f"{Fore.YELLOW}No metadata found in the markdown file.{Style.RESET_ALL}")
+        markdown_content = file_content  # Set markdown_content to the entire file content if no metadata is found
+
+    # If a metadata file is provided, use it as the yaml_metadata
+    if args.metadata:
+        logger.info(f"{Fore.GREEN}metadata YAML file provided, reading values from it.{Style.RESET_ALL}")
+        with open(args.metadata, 'r') as file:
+            yaml_metadata = yaml.safe_load(file)
 
     # Render the template
     template = Template(markdown_content)
