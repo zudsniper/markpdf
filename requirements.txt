@@ -1,0 +1,7 @@
+colorama==0.4.6
+Jinja2==3.1.2
+loguru==0.7.0
+Markdown==3.4.3
+pdfkit==1.0.0
+PyYAML==6.0
+setuptools==67.6.1

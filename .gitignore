@@ -1,0 +1,4 @@
+**/.DS_Store
+**/*.env
+!**/template.env
+!**/*.env.template
