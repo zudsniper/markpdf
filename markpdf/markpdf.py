@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# markpdf.py v1.3.3
+# markpdf.py v1.5.0
 # -----------------
 #
 # @zudsniper
@@ -30,7 +30,7 @@ def main():
     parser.add_argument('-o', '--output', default='out.pdf', help='Output PDF file (default: out.pdf)')
     parser.add_argument('-m', '--metadata', help='Metadata YAML file')
     parser.add_argument('--darkmode', action='store_true', help='Output a "dark mode" version of the document')
-    parser.add_argument('-f', '--font', default='JetBrains Mono', help='Font to use in the PDF document')
+    parser.add_argument('-f', '--font', help='Font to use in the PDF document')
     args = parser.parse_args()
 
     # Read the input file
@@ -63,15 +63,32 @@ def main():
     rendered_markdown = template.render(yaml_metadata)
 
     # Convert markdown to HTML
-    html = markdown.markdown(rendered_markdown)
+    html = markdown.markdown(rendered_markdown, extensions=['footnotes'])
 
     # If dark mode is enabled, add a CSS style for dark mode
     if args.darkmode:
-        html = f"<style>body,html {{ background-color: #2b2b2b; color: #a9b7c6; font-family: '{args.font}'; }}</style>{html}"
-        #html = f"<style>body {{ background-color: #2b2b2b; color: #a9b7c6; }}</style>{html}"
+        logger.info(f"{Fore.WHITE}{Back.BLACK}Dark mode is enabled. The output PDF will be in the Darcula color scheme.{Style.RESET_ALL}")
+        html = f"<style>body,html {{ background-color: #2b2b2b; color: #a9b7c6; font-family: '{args.font if args.font else 'Helvetica'}'; }}</style>{html}"
+
+    # If a font is provided, apply it to the document
+    if args.font:
+        logger.info(f"{Fore.WHITE}Font '{Fore.CYAN}{args.font}{Style.RESET_ALL}' will be applied to the document. {Fore.YELLOW}{Style.BRIGHT}Please ensure that this font is installed on your system.{Style.RESET_ALL}")
+        html = f"<style>body,html {{ font-family: '{args.font}'; }}</style>{html}"
+
+    footer_content = ''
+
+    # Add a footer and position it at the bottom of the page
+    html = f"<div class='content'>{html}</div><footer>{footer_content}</footer>"
+    html = f"<style>.content {{ min-height: 100vh; position: relative; }} footer {{ position: absolute; bottom: 0; width: 100%; }}</style>{html}"
 
     # Convert HTML to PDF
-    pdfkit.from_string(html, args.output)
+    options = {
+        'margin-top': '0mm',
+        'margin-right': '0mm',
+        'margin-bottom': '0mm',
+        'margin-left': '0mm',
+    }
+    pdfkit.from_string(html, args.output, options=options)
     logger.info(f"{Fore.GREEN}PDF has been successfully generated at {args.output}{Style.RESET_ALL}")
 
 if __name__ == "__main__":
