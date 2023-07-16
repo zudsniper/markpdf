@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# markpdf.py v1.5.0
+# markpdf.py v1.5.2
 # -----------------
 #
 # @zudsniper
@@ -78,15 +78,15 @@ def main():
     footer_content = ''
 
     # Add a footer and position it at the bottom of the page
-    html = f"<div class='content'>{html}</div><footer>{footer_content}</footer>"
-    html = f"<style>.content {{ min-height: 100vh; position: relative; }} footer {{ position: absolute; bottom: 0; width: 100%; }}</style>{html}"
+    #html = f"<div class='content'>{html}</div><footer>{footer_content}</footer>"
+    html = f"<style>.content {{ min-height: 100vh; position: relative; }} .footnotes {{ position: absolute; bottom: 0; width: 100%; }}</style>{html}"
 
     # Convert HTML to PDF
     options = {
-        'margin-top': '0mm',
-        'margin-right': '0mm',
-        'margin-bottom': '0mm',
-        'margin-left': '0mm',
+        'margin-top': '7mm',
+        'margin-right': '2mm',
+        'margin-bottom': '7mm',
+        'margin-left': '2mm',
     }
     pdfkit.from_string(html, args.output, options=options)
     logger.info(f"{Fore.GREEN}PDF has been successfully generated at {args.output}{Style.RESET_ALL}")
